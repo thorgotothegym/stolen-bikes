@@ -12,6 +12,10 @@ export interface IncidentsResp {
   type_properties: string;
 }
 
+export interface ResponseIncidents {
+  incidents: IncidentsResp[];
+}
+
 export interface Image {
   image_url?: string;
   image_url_thumb?: string;

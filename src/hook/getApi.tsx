@@ -1,5 +1,4 @@
 import React from 'react';
-import { IncidentsResp } from '../models/response';
 
 export const apiStates = {
     LOADING: 'LOADING',
