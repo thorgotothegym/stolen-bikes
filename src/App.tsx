@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col } from "antd";
+import { Layout, Row, Col, Button } from "antd";
 import { Search } from "./component/search/search";
 import { useGetService } from "./hook/useGetService";
+import { apiStates, useApi } from "./hook/getApi";
 import { IncidentsResp as IResponse } from "./models/response";
 import { Reporter } from "./component/reporter/reporter";
 
@@ -20,15 +21,18 @@ function App() {
   });
   const [allowGeo, setAllowGeo] = useState<boolean>(false);
   const [todayTimeStamp, setTodayTimeStamp] = useState<number>(0);
+  const [pagination, setPagination] = useState<number>(10);
 
-  const service = useGetService(
-    "https://bikewise.org:443/api/v2/incidents?page=1&per_page=10&incident_type=theft&proximity=52.52437%2C13.41053&proximity_square=100"
-  );
+  const [response, setResponse] = useState<IResponse>();
+  const [error, setError] = useState(null);
+  const [totalBikes, setTotalBikes] = useState<number>(0);
+
+  const service = useGetService(`https://bikewise.org:443/api/v2/incidents?page=1&incident_type=theft&proximity=52.52437%2C13.41053&proximity_square=100`);
 
   useEffect(() => {
-    if ("geolocation" in navigator) {
+    /*     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        setGeo({
+        setGeo({  
           ...geo,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -45,6 +49,7 @@ function App() {
       return ms;
     };
     setTodayTimeStamp(getNowTime);
+    fetchData(); */
   }, []);
 
   return (
@@ -60,6 +65,13 @@ function App() {
               <div>
                 {" "}
                 <span>nowis = {todayTimeStamp}</span>
+                <button
+                  onClick={() => {
+                    setPagination(pagination + 10);
+                  }}
+                >
+                  miaU
+                </button>
                 {geo ? (
                   <div>
                     latitude:{geo.latitude} longitude: {geo.longitude}
@@ -87,27 +99,25 @@ function App() {
         </Row>
         <Content style={{ margin: "0 10px 0 10px", overflow: "" }}>
           <div className="site-layout-background">
-            {/* <Reporter /> */}
             <div style={{ backgroundColor: "red" }}>
               {service.status === "loading" && <div>Loading...</div>}
               {service.status === "loaded" &&
                 service.payload.incidents.map((incidents: IResponse) => {
-                  console.log(JSON.stringify(incidents.media.image_url_thumb))
                   return (
-                    <Reporter
-                      address={incidents.address}
-                      description={incidents.description}
-                      location_description={incidents.location_description}
-                      location_type={incidents.location_type}
-                      occurred_at={incidents.occurred_at}
-                      title={incidents.title}
-                      type={incidents.type}
-                      type_properties={incidents.type_properties}
-                      updated_at={incidents.updated_at}
-                      id={incidents.id}
-                      key={incidents.id}
-                      media={incidents.media.image_url_thumb}
-                    />
+                      <Reporter
+                        address={incidents.address}
+                        description={incidents.description}
+                        location_description={incidents.location_description}
+                        location_type={incidents.location_type}
+                        occurred_at={incidents.occurred_at}
+                        title={incidents.title}
+                        type={incidents.type}
+                        type_properties={incidents.type_properties}
+                        updated_at={incidents.updated_at}
+                        id={incidents.id}
+                        key={incidents.id}
+                        media={incidents.media.image_url_thumb}
+                      />
                   );
                 })}
               {service.status === "error" && <div>Error message</div>}

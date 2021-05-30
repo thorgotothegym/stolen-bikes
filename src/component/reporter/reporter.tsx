@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, Row, Col, Popover, Button, Typography } from "antd";
+import { Image, Row, Col, Popover, Button, Card } from "antd";
 import { IncidentsResp } from "../../models/response";
 import moment from "moment";
 import styled from "styled-components";
@@ -73,7 +73,6 @@ export const Reporter = ({
     </div>
   );
 
-  const { Text, Title } = Typography;
   return (
     <WrapperContainer key={id}>
       <Row>
@@ -86,18 +85,18 @@ export const Reporter = ({
             <li>
               {occurred_at ? (
                 <span>
-                  When:  
+                  When:
                   {moment.unix(occurred_at).format("DD/MM/YYYY")}
                 </span>
               ) : (
                 ""
               )}
             </li>
-            <li>{address ? <p>Address: {address}</p> : ""}</li>
+            <li>{address ? <p>Location: {address}</p> : ""}</li>
             <li>
               {updated_at ? (
                 <span>
-                  Last Update: 
+                  Last Update:
                   {moment.unix(occurred_at).startOf("day").fromNow()}
                 </span>
               ) : (
