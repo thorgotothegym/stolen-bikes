@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Button, Input } from "antd";
-import { Search } from "./component/search/search";
+import {
+  Layout,
+  Row,
+  Col,
+  Button,
+  Input,
+  TimePicker,
+  DatePicker,
+  Space,
+} from "antd";
 import { IncidentsResp, ResponseIncidents } from "./models/response";
 import { Reporter } from "./component/reporter/reporter";
+import moment from 'moment';
 
 import "./App.css";
 
@@ -13,6 +22,9 @@ interface Geo {
 
 function App() {
   const { Header, Content, Footer } = Layout;
+  const { RangePicker } = DatePicker;
+  const dateFormat = "YYYY-MM-DD";
+
   const [geo, setGeo] = useState<Geo>({
     latitude: 0,
     longitude: 0,
@@ -34,7 +46,7 @@ function App() {
     setQuery(enteredName);
   };
 
-  const search = (stringToFind:string) => {
+  const search = (stringToFind: string) => {
     const toFind = data.filter((item: IncidentsResp) =>
       item.title.includes(stringToFind)
     );
@@ -94,24 +106,36 @@ function App() {
             <div>col-6</div>
           </Col>
           <Col className="gutter-row" span={8}>
-            <div>
-              {" "}
-              <Search />
+            <div className="search">
+              <Space direction="horizontal" size={12}>
+                <Input
+                  value={query}
+                  onChange={inputHandler}
+                  placeholder="Search products"
+                  className="input"
+                />
+                <pre>{query}</pre>
+                <RangePicker
+                  defaultValue={[
+                    moment("2015/01/01", dateFormat),
+                    moment("2015/01/01", dateFormat),
+                  ]}
+                  format={dateFormat}
+                />
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    search(query);
+                  }}
+                >
+                  search{" "}
+                </Button>
+              </Space>
+              ,
             </div>
           </Col>
           <Col className="gutter-row" span={8}>
             <div>col-6</div>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Input.Search
-              value={query}
-              onChange={inputHandler}
-              placeholder="Search products"
-              className="input"
-            />
-            <button onClick={() => {search(query)}}>search</button>
           </Col>
         </Row>
         <Row>
