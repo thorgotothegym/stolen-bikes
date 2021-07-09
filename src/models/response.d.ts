@@ -1,19 +1,28 @@
 export interface IncidentsResp {
-  id: number;
-  title: string;
+  date_stolen: number;
   description: string;
-  address: string;
-  occurred_at: number;
-  updated_at: number;
-  media?: any;
-  location_type: string;
-  location_description: string;
-  type: string;
-  type_properties: string;
+  frame_colors: Array<string>;
+  frame_model: string;
+  id: number;
+  is_stock_img: boolean;
+  large_img: string;
+  location_found: string;
+  manufacturer_name: string;
+  external_id: number;
+  registry_name: string;
+  registry_url: string;
+  serial: string;
+  status: any; // see the response
+  stolen: boolean;
+  stolen_location: string;
+  thumb: string;
+  title: string;
+  url: string;
+  year: number;
 }
 
 export interface ResponseIncidents {
-  incidents: IncidentsResp[];
+  bikes: IncidentsResp[];
 }
 
 export interface Image {

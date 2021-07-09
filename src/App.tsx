@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { IncidentsResp, ResponseIncidents } from "./models/response";
 import { Reporter } from "./component/reporter/reporter";
-import moment from 'moment';
+import moment from "moment";
 
 import "./App.css";
 
@@ -33,11 +33,9 @@ function App() {
   const [todayTimeStamp, setTodayTimeStamp] = useState<number>(0);
   const [pagination, setPagination] = useState<number>(10);
 
-  const [response, setResponse] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [errorFetch, setErrorFetch] = useState<boolean | number>(false);
-  // refactor useSTate data
-  const [data, setData] = useState<any>([]);
+
+  const [bikes, setBikes] = useState<IncidentsResp[]>([]);
 
   const [query, setQuery] = useState<string | any>();
 
@@ -47,27 +45,26 @@ function App() {
   };
 
   const search = (stringToFind: string) => {
-    const toFind = data.filter((item: IncidentsResp) =>
-      item.title.includes(stringToFind)
+    /* const toFind = data?.filter((item: IncidentsResp) =>
+      item.title.includes(stringToFind).valueOf()
+      item.title.includes(stringToFind).valueOf()
     );
-    setData(toFind);
+    setData(toFind); */
   };
 
   useEffect(() => {
     const getData = async () => {
-      const url = `https://bikewise.org:443/api/v2/incidents?page=1&incident_type=theft&proximity=52.52437%2C13.41053&proximity_square=100`;
-      let response = await fetch(url);
-
-      if (response.status === 200) {
-        let data = await response.json();
-        setData(data.incidents);
+      const url = `https://bikeindex.org:443/api/v3/search?page=1&per_page=25&location=52.52437%2C13.41053&distance=10&stolenness=proximity`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setBikes(data.bikes);
         setLoading(false);
-      } else {
-        alert("something was wrong with the API");
+      } catch (error) {
+        console.log(error);
       }
     };
     getData();
-    console.log("data", data);
   }, []);
 
   return (
@@ -143,19 +140,23 @@ function App() {
         </Row>
         <Content style={{ margin: "0 10px 0 10px", overflow: "" }}>
           <div className="site-layout-background">
-            <div style={{ backgroundColor: "red" }}>
-              {loading === true ? (
-                <div>LOADING ...</div>
-              ) : data !== "" ? (
-                <pre>
-                  {data.map((e: IncidentsResp) => {
-                    return <div>title: {e.title}</div>;
-                  })}
-                </pre>
-              ) : (
-                "empty"
-              )}
-            </div>
+            {loading === true ? (
+              "loading"
+            ) : (
+              <div>
+                {bikes.map((e: IncidentsResp) => {
+                  return (
+                    <Reporter
+                      title={e.title}
+                      description={e.description}
+                      id={e.id}
+                      large_img={e.large_img}
+                      date_stolen={e.date_stolen}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
